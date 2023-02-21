@@ -24,4 +24,7 @@
     border: 2px solid red;
     width: 200px;
     height: 200px;
+    font-size: 144px;
+    text-align: center;
+    line-height: 200px;
 }
