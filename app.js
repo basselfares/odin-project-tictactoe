@@ -1,11 +1,41 @@
-const playerContainer = document.getElementsByClassName('player-container')
-const gameContainer = document.getElementsByClassName('game-container')
+const playerContainer = document.querySelector('.player-container')
+const gameContainer = document.querySelector('.game-container')
+const player1 = document.querySelector('.player1')
+const player2 = document.querySelector('.player2')
+const restart = document.querySelector('.restart')
 const squares = document.querySelectorAll('.game-container > div')
+
+const restartGame = () => {
+    restart.addEventListener('click', () => {
+        console.log('asd')
+    })
+}
+restart.addEventListener('click', () => {
+    squares.forEach((square) => {
+        square.textContent = '';
+        moveTracker.xCounter = [];
+        moveTracker.oCounter = [];
+        moveTracker.checkWin = false;
+    })
+})
 
 const moveTracker = {
     xCounter: [],
-    oCounter: []
+    oCounter: [],
+    checkWin: false
 }
+
+const victoryTracker = {
+    xVictory: 0,
+    oVictory: 0,
+}
+
+const playerScores = () => {
+    player1.textContent = `Player 1 ${victoryTracker.xVictory}`;
+    player2.textContent = `Player 2 ${victoryTracker.oVictory}`;
+}
+
+console.log(playerScores(), player1, player1.textContent)
 
 const textCon = function (str, className) {
     if (str.textContent.length === 0 && moveTracker.xCounter.length > moveTracker.oCounter.length) {
@@ -20,9 +50,18 @@ const textCon = function (str, className) {
 
 squares.forEach((square) => {
     square.addEventListener('click', () => {
+    if (moveTracker.checkWin === false) {
         textCon(square, square.className)
         game()
-    })
+        playerScores()
+    }
+    else {
+        square.removeEventListener('click', () => {
+            textCon(square, square.className)
+            game()
+        })
+    }
+})
 })
 
 function scenariosArr(arr) {
@@ -58,7 +97,7 @@ function scenariosArr(arr) {
     return arrPoss;
 }
 
-const winningScenarios = [`[1,2,3]`, `[4,5,6]`, `[7,8,9]`, `[1,4,7]`, `[2,5,8]`, `[3,6,9]`, `[1,5,9]`, `[3,5,6]`]
+const winningScenarios = [`[1,2,3]`, `[4,5,6]`, `[7,8,9]`, `[1,4,7]`, `[2,5,8]`, `[3,6,9]`, `[1,5,9]`, `[3,5,7]`]
 
 function sortArrays(arrArrays) {
     for (let i = 0; i < arrArrays.length; i++) {
@@ -76,11 +115,15 @@ function winner(arrArrays) {
 }
 
 const game = () => {
-    if (winner(sortArrays(scenariosArr(moveTracker.xCounter)))) {
+    if (!moveTracker.checkWin && winner(sortArrays(scenariosArr(moveTracker.xCounter)))) {
         console.log('X Won')
+        victoryTracker.xVictory++
+        moveTracker.checkWin = true;
     }
-    else if (winner(sortArrays(scenariosArr(moveTracker.oCounter)))) {
+    else if (!moveTracker.checkWin && winner(sortArrays(scenariosArr(moveTracker.oCounter)))) {
         console.log('O Won')
+        victoryTracker.oVictory++
+        moveTracker.checkWin = true;
     }
 }
 
